@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import net.fabricmc.TestCoverage;
+
 import org.sat4j.pb.IPBSolver;
 import org.sat4j.pb.SolverFactory;
 import org.sat4j.pb.tools.DependencyHelper;
@@ -450,20 +452,26 @@ final class ModSolver {
 
 	private static Version deriveVersion(VersionInterval interval) {
 		if (!interval.isSemantic()) {
+			TestCoverage.ModSolver_deriveVersion[0] = true;
 			return interval.getMin() != null ? interval.getMin() : interval.getMax();
 		}
 
 		SemanticVersion v = (SemanticVersion) interval.getMin();
 
 		if (v != null) { // min bound present
+			TestCoverage.ModSolver_deriveVersion[1] = true;
 			if (!interval.isMinInclusive()) { // not inclusive, increment slightly
+				TestCoverage.ModSolver_deriveVersion[2] = true;
 				String pr = v.getPrereleaseKey().orElse(null);
 				int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
 
 				if (pr != null) { // has prerelease, add to increase
+					TestCoverage.ModSolver_deriveVersion[3] = true;
 					pr = pr.isEmpty() ? "0" : pr.concat(".0");
 				} else { // regular version only, increment patch and make least prerelease
+					TestCoverage.ModSolver_deriveVersion[4] = true;
 					if (comps.length < 3) {
+						TestCoverage.ModSolver_deriveVersion[5] = true;
 						comps = Arrays.copyOf(comps, comps.length + 1);
 					}
 
@@ -474,45 +482,60 @@ final class ModSolver {
 				v = new SemanticVersionImpl(comps, pr, null);
 			}
 		} else if ((v = (SemanticVersion) interval.getMax()) != null) { // max bound only
+			TestCoverage.ModSolver_deriveVersion[6] = true;
 			if (!interval.isMaxInclusive()) { // not inclusive, decrement slightly
+				TestCoverage.ModSolver_deriveVersion[7] = true;
 				String pr = v.getPrereleaseKey().orElse(null);
 				int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
 
 				if (pr == null) { // no prerelease, use large pr segment
+					TestCoverage.ModSolver_deriveVersion[8] = true;
 					pr = "zzzzzzzz";
 				} else if (!pr.isEmpty()) { // non-empty prerelease present, decrement slightly or truncate
+					TestCoverage.ModSolver_deriveVersion[9] = true;
 					int pos = pr.lastIndexOf('.') + 1;
 					String suffix = pr.substring(pos);
 					int val;
 					char c;
 
 					if (suffix.matches("\\d+") && (val = Integer.parseInt(suffix)) > 0) {
+						TestCoverage.ModSolver_deriveVersion[10] = true;
 						pr = pr.substring(0, pos)+(val - 1);
 					} else if (suffix.length() > 0 && ((c = suffix.charAt(suffix.length() - 1)) != '0' || suffix.length() >= 2)) {
+						TestCoverage.ModSolver_deriveVersion[11] = true;
 						pr = pr.substring(0, pr.length() - 1);
 
 						if (c == 'a') {
+							TestCoverage.ModSolver_deriveVersion[12] = true;
 							pr += 'Z';
 						} else if (c == 'A') {
+							TestCoverage.ModSolver_deriveVersion[13] = true;
 							pr += '9';
 						} else if (c != '0') {
+							TestCoverage.ModSolver_deriveVersion[14] = true;
 							pr += c - 1;
 						}
 					} else {
+						TestCoverage.ModSolver_deriveVersion[15] = true;
 						pr = pos > 0 ? pr.substring(0, pos - 1) : "";
 					}
 				} else { // empty prerelease, decrement version and strip prerelease
+					TestCoverage.ModSolver_deriveVersion[16] = true;
 					pr = null;
 
 					if (comps.length < 3) {
+						TestCoverage.ModSolver_deriveVersion[17] = true;
 						comps = Arrays.copyOf(comps, 3);
 					}
 
 					for (int i = 2; i >= 0; i--) {
+						TestCoverage.ModSolver_deriveVersion[18] = true;
 						if (comps[i] > 0) {
+							TestCoverage.ModSolver_deriveVersion[19] = true;
 							comps[i]--;
 							break;
 						} else {
+							TestCoverage.ModSolver_deriveVersion[20] = true;
 							comps[i] = 9999;
 						}
 					}
@@ -521,6 +544,7 @@ final class ModSolver {
 				v = new SemanticVersionImpl(comps, pr, null);
 			}
 		} else { // unbounded
+			TestCoverage.ModSolver_deriveVersion[21] = true;
 			v = new SemanticVersionImpl(new int[] { 1 }, null, null);
 		}
 
