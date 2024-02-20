@@ -1,13 +1,11 @@
 package net.fabricmc;
 
-import java.io.Console;
-
 public class TestCoverage {
 	
-	public static boolean[] ModPrioSorter_sort = new boolean[25];
+	public static boolean[] ModPrioSorter_sort = new boolean[18];
 	public static boolean[] ModSolver_deriveVersion = new boolean[25];
 	public static boolean[] ResultAnalyzer_formatVersionRequirements = new boolean[16];
-	public static boolean[] ResultAnalyzer_addErrorToList = new boolean[25];
+	public static boolean[] ResultAnalyzer_addErrorToList = new boolean[11];
 	public static boolean[] SemanticVersionImpl_SemanticVersionImpl = new boolean[25];
 
 	private static int testCounter = 0;

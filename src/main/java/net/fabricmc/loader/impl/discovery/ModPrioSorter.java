@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.fabricmc.TestCoverage;
 import net.fabricmc.loader.api.Version;
 
 final class ModPrioSorter {
@@ -52,9 +53,11 @@ final class ModPrioSorter {
 		Set<String> providedMods = new HashSet<>();
 
 		for (ModCandidate mod : mods) {
+			TestCoverage.ModPrioSorter_sort[0] = true;
 			modsById.computeIfAbsent(mod.getId(), ignore -> new ArrayList<>()).add(mod);
 
 			for (String provided : mod.getProvides()) {
+				TestCoverage.ModPrioSorter_sort[1] = true;
 				modsById.computeIfAbsent(provided, ignore -> new ArrayList<>()).add(mod);
 				providedMods.add(provided);
 			}
@@ -63,7 +66,9 @@ final class ModPrioSorter {
 		// strip any provided mod ids that don't have any effect (only 1 candidate for the id)
 
 		for (Iterator<String> it = providedMods.iterator(); it.hasNext(); ) {
+			TestCoverage.ModPrioSorter_sort[2] = true;
 			if (modsById.get(it.next()).size() <= 1) {
+				TestCoverage.ModPrioSorter_sort[3] = true;
 				it.remove();
 			}
 		}
@@ -71,7 +76,10 @@ final class ModPrioSorter {
 		// handle overlapping mod ids that need higher priority than the standard comparator handles
 		// this is implemented through insertion sort which allows for skipping over unrelated mods that aren't properly comparable
 
-		if (providedMods.isEmpty()) return; // no overlapping id mods
+		if (providedMods.isEmpty()) {
+			TestCoverage.ModPrioSorter_sort[4] = true;
+			return; // no overlapping id mods
+		}
 
 		// float overlapping ids up as needed
 
@@ -80,12 +88,14 @@ final class ModPrioSorter {
 		Set<String> potentiallyOverlappingIds = new HashSet<>();
 
 		for (int i = 0, size = mods.size(); i < size; i++) {
+			TestCoverage.ModPrioSorter_sort[5] = true;
 			ModCandidate mod = mods.get(i);
 			String id = mod.getId();
 
 			//System.out.printf("%d: %s%n", i, mod);
 
 			if (!movedPastRoots && !mod.isRoot()) { // update start index to avoid mixing root and non-root mods (root always has higher prio)
+				TestCoverage.ModPrioSorter_sort[6] = true;
 				movedPastRoots = true;
 				startIdx = i;
 			}
@@ -93,45 +103,59 @@ final class ModPrioSorter {
 			// gather ids for mod that might overlap other mods
 
 			if (providedMods.contains(id)) {
+				TestCoverage.ModPrioSorter_sort[7] = true;
 				potentiallyOverlappingIds.add(id);
 			}
 
 			if (!mod.getProvides().isEmpty()) {
+				TestCoverage.ModPrioSorter_sort[8] = true;
 				for (String provId : mod.getProvides()) {
+					TestCoverage.ModPrioSorter_sort[9] = true;
 					if (providedMods.contains(provId)) {
+						TestCoverage.ModPrioSorter_sort[10] = true;
 						potentiallyOverlappingIds.add(provId);
 					}
 				}
 			}
 
-			if (potentiallyOverlappingIds.isEmpty()) continue;
+			if (potentiallyOverlappingIds.isEmpty()) {
+				TestCoverage.ModPrioSorter_sort[11] = true;
+				continue;
+			}
 
 			// search for a suitable mod that overlaps mod but has a lower version
 
 			int earliestIdx = -1;
 
 			for (int j = i - 1; j >= startIdx; j--) {
+				TestCoverage.ModPrioSorter_sort[12] = true;
 				ModCandidate cmpMod = mods.get(j);
 				String cmpId = cmpMod.getId();
-				if (cmpId.equals(id)) break; // can't move mod past another mod with the same id since that mod since that mod would have a higher version due to the previous sorting step and thus always has higher prio
-
+				if (cmpId.equals(id)) {
+					TestCoverage.ModPrioSorter_sort[13] = true;
+					break; // can't move mod past another mod with the same id since that mod since that mod would have a higher version due to the previous sorting step and thus always has higher prio
+				}
 				// quick check if it might match
 				if (!potentiallyOverlappingIds.contains(cmpId)
 						&& (cmpMod.getProvides().isEmpty() || Collections.disjoint(potentiallyOverlappingIds, cmpMod.getProvides()))) {
+					TestCoverage.ModPrioSorter_sort[14] = true;
 					continue;
 				}
 
 				int cmp = compareOverlappingIds(mod, cmpMod, Integer.MAX_VALUE);
 
 				if (cmp < 0) { // mod needs to be after cmpMod, move mod forward
+					TestCoverage.ModPrioSorter_sort[15] = true;
 					//System.out.printf("found candidate for %d at %d (before %s)%n", i, j, cmpMod);
 					earliestIdx = j;
 				} else if (cmp != Integer.MAX_VALUE) { // cmpMod has at least the same prio, don't search past it
+					TestCoverage.ModPrioSorter_sort[16] = true;
 					break;
 				}
 			}
 
 			if (earliestIdx >= 0) {
+				TestCoverage.ModPrioSorter_sort[17] = true;
 				//System.out.printf("move %d to %d (before %s)%n", i, earliestIdx, mods.get(earliestIdx));
 				mods.remove(i);
 				mods.add(earliestIdx, mod);
