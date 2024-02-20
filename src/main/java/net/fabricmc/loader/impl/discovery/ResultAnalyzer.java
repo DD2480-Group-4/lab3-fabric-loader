@@ -263,7 +263,11 @@ final class ResultAnalyzer {
 		return mod != null ? Collections.singletonList(mod) : Collections.emptyList();
 	}
 
-	private static void addErrorToList(ModCandidate mod, ModDependency dep, List<ModCandidate> matches, boolean presentForOtherEnv, boolean suggestFix, String prefix, PrintWriter pw) {
+	private static void addErrorToList(ModCandidate mod, ModDependency dep, List<ModCandidate> matches,
+			boolean presentForOtherEnv, boolean suggestFix, String prefix, PrintWriter pw) {
+
+		TestCoverage.ResultAnalyzer_addErrorToList[0] = true;
+
 		Object[] args = new Object[] {
 				getName(mod),
 				getVersion(mod),
@@ -277,24 +281,33 @@ final class ResultAnalyzer {
 
 		if (!matches.isEmpty()) {
 			boolean present;
+			TestCoverage.ResultAnalyzer_addErrorToList[1] = true;
 
 			if (dep.getKind().isPositive()) {
 				present = false;
+				TestCoverage.ResultAnalyzer_addErrorToList[2] = true;
 
 				for (ModCandidate match : matches) {
-					if (dep.matches(match.getVersion())) { // there is a satisfying mod version, but it can't be loaded for other reasons
+					TestCoverage.ResultAnalyzer_addErrorToList[3] = true;
+
+					if (dep.matches(match.getVersion())) { // there is a satisfying mod version, but it can't be loaded
+															// for other reasons
 						present = true;
+						TestCoverage.ResultAnalyzer_addErrorToList[4] = true;
 						break;
 					}
 				}
 			} else {
+				TestCoverage.ResultAnalyzer_addErrorToList[5] = true;
 				present = true;
 			}
 
 			reason = present ? "invalid" : "mismatch";
 		} else if (presentForOtherEnv && dep.getKind().isPositive()) {
+			TestCoverage.ResultAnalyzer_addErrorToList[6] = true;
 			reason = "envDisabled";
 		} else {
+			TestCoverage.ResultAnalyzer_addErrorToList[7] = true;
 			reason = "missing";
 		}
 
@@ -302,12 +315,16 @@ final class ResultAnalyzer {
 		pw.printf("\n%s - %s", prefix, StringUtil.capitalize(Localization.format(key, args)));
 
 		if (suggestFix) {
+			TestCoverage.ResultAnalyzer_addErrorToList[8] = true;
+
 			key = String.format("resolution.%s.suggestion", dep.getKind().getKey());
 			pw.printf("\n%s\t - %s", prefix, StringUtil.capitalize(Localization.format(key, args)));
 		}
 
 		if (SHOW_PATH_INFO) {
+			TestCoverage.ResultAnalyzer_addErrorToList[9] = true;
 			for (ModCandidate m : matches) {
+				TestCoverage.ResultAnalyzer_addErrorToList[10] = true;
 				appendJijInfo(m, prefix, true, pw);
 			}
 		}
