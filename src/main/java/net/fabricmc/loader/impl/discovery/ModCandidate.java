@@ -70,7 +70,7 @@ public final class ModCandidate implements DomainObject.Mod {
 		return new ModCandidate(mod.paths, null, -1, metadata, false, Collections.emptyList());
 	}
 
-	static ModCandidate createPlain(List<Path> paths, LoaderModMetadata metadata, boolean requiresRemap, Collection<ModCandidate> nestedMods) {
+	public static ModCandidate createPlain(List<Path> paths, LoaderModMetadata metadata, boolean requiresRemap, Collection<ModCandidate> nestedMods) {
 		return new ModCandidate(paths, null, -1, metadata, requiresRemap, nestedMods);
 	}
 

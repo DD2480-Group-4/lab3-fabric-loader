@@ -31,7 +31,7 @@ import net.fabricmc.loader.api.metadata.ModDependency;
 import net.fabricmc.loader.api.metadata.ModEnvironment;
 import net.fabricmc.loader.api.metadata.Person;
 
-final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
+public final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetadata {
 	private static final Mixins EMPTY_MIXINS = new Mixins(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 	// Required
 	private final String id;
@@ -53,7 +53,7 @@ final class V0ModMetadata extends AbstractModMetadata implements LoaderModMetada
 	private final ContactInformation links;
 	private final String license;
 
-	V0ModMetadata(String id, Version version, Collection<ModDependency> dependencies, Mixins mixins, ModEnvironment environment, String initializer, Collection<String> initializers,
+	public V0ModMetadata(String id, Version version, Collection<ModDependency> dependencies, Mixins mixins, ModEnvironment environment, String initializer, Collection<String> initializers,
 			String name, String description, Collection<Person> authors, Collection<Person> contributors, ContactInformation links, String license) {
 		this.id = id;
 		this.version = version;
