@@ -1,4 +1,4 @@
-package net.fabricmc.test;
+package net.fabricmc;
 
 import java.io.Console;
 
