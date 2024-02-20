@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,11 @@ final class V1ModJsonParsingTests {
 
 		specPath = testLocation.resolve("spec");
 		errorPath = testLocation.resolve("error");
+	}
+
+	@AfterAll
+	static void afterAll() {
+		TestCoverage.AfterAllTests();
 	}
 
 	/*

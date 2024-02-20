@@ -16,12 +16,19 @@
 
 package net.fabricmc.test;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.fabricmc.loader.impl.util.Arguments;
 
 public class ArgumentParsingTests {
+
+	@AfterAll
+	static void afterAll() {
+		TestCoverage.AfterAllTests();
+	}
+
 	@Test
 	public void parseNormal() {
 		Arguments arguments = new Arguments();

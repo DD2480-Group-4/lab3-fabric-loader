@@ -19,6 +19,8 @@ package net.fabricmc.test;
 import java.util.function.Predicate;
 
 import org.jetbrains.annotations.Nullable;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
@@ -59,7 +61,14 @@ public class VersionParsingTests {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
+	@AfterAll
+	static void afterAll() {
+		TestCoverage.AfterAllTests();
+	}
+
+	@Test
+	void main_tests() throws Exception {
+
 		// Test: Semantic version creation.
 		testTrue(tryParseSemantic("0.3.5", false));
 		testTrue(tryParseSemantic("0.3.5-beta.2", false));
