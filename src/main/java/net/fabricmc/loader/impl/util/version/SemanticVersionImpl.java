@@ -45,27 +45,8 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 	private String friendlyName;
 
 	public SemanticVersionImpl(String version, boolean storeX) throws VersionParsingException {
-		int buildDelimPos = version.indexOf('+');
-
-		if (buildDelimPos >= 0) {
-			build = version.substring(buildDelimPos + 1);
-			version = version.substring(0, buildDelimPos);
-		} else {
-			build = null;
-		}
-
-		int dashDelimPos = version.indexOf('-');
-
-		if (dashDelimPos >= 0) {
-			prerelease = version.substring(dashDelimPos + 1);
-			version = version.substring(0, dashDelimPos);
-		} else {
-			prerelease = null;
-		}
-
-		if (prerelease != null && !DOT_SEPARATED_ID.matcher(prerelease).matches()) {
-			throw new VersionParsingException("Invalid prerelease string '" + prerelease + "'!");
-		}
+		String[] VersionInfo = BuildPrereleaseHandler(version);
+		version = VersionInfo[0]; build = VersionInfo[1]; prerelease = VersionInfo[2];
 
 		if (version.endsWith(".")) {
 			throw new VersionParsingException("Negative version number component found!");
@@ -75,9 +56,8 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 
 		String[] componentStrings = version.split("\\.");
 
-		if (componentStrings.length < 1) {
-			throw new VersionParsingException("Did not provide version numbers!");
-		}
+		// if (componentStrings.length < 1) statement is deleted
+		// because the length of string array here is always larger than 0
 
 		int[] components = new int[componentStrings.length];
 		int firstWildcardIdx = -1;
@@ -86,7 +66,7 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 			String compStr = componentStrings[i];
 
 			if (storeX) {
-				if (compStr.equals("x") || compStr.equals("X") || compStr.equals("*")) {
+				if (WildcardComparer(compStr)) {
 					if (prerelease != null) {
 						throw new VersionParsingException("Pre-release versions are not allowed to use X-ranges!");
 					}
@@ -105,10 +85,8 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 
 			try {
 				components[i] = Integer.parseInt(compStr);
-
-				if (components[i] < 0) {
-					throw new VersionParsingException("Negative version number component '" + compStr + "'!");
-				}
+				// if (components[i] < 0) statement is deleted
+				// because the negative sign would be considered as '-' dash at first.
 			} catch (NumberFormatException e) {
 				throw new VersionParsingException("Could not parse version number component '" + compStr + "'!", e);
 			}
@@ -119,13 +97,46 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 		}
 
 		// strip extra wildcards (1.x.x -> 1.x)
-		if (firstWildcardIdx > 0 && components.length > firstWildcardIdx + 1) {
-			components = Arrays.copyOf(components, firstWildcardIdx + 1);
-		}
-
-		this.components = components;
+		this.components = WildcardStripper(firstWildcardIdx, components);
 
 		buildFriendlyName();
+	}
+
+	private String[] BuildPrereleaseHandler(String versionStr) throws VersionParsingException {
+		int buildDelimPos = versionStr.indexOf('+');
+		String _version = versionStr, _build, _prerelease;
+
+		if (buildDelimPos >= 0) {
+			_build = versionStr.substring(buildDelimPos + 1);
+			_version = versionStr.substring(0, buildDelimPos);
+		} else {
+			_build = null;
+		}
+
+		int dashDelimPos = versionStr.indexOf('-');
+
+		if (dashDelimPos >= 0) {
+			_prerelease = versionStr.substring(dashDelimPos + 1);
+			_version = versionStr.substring(0, dashDelimPos);
+		} else {
+			_prerelease = null;
+		}
+
+		if (_prerelease != null && !DOT_SEPARATED_ID.matcher(_prerelease).matches()) {
+			throw new VersionParsingException("Invalid prerelease string '" + _prerelease + "'!");
+		}
+
+		return new String[]{_version, _build, _prerelease};
+	}
+
+	private boolean WildcardComparer(String compStr) throws VersionParsingException {
+		return compStr.equals("x") || compStr.equals("X") || compStr.equals("*");
+	}
+
+	private int [] WildcardStripper(int firstWildcardIdx, int [] components) throws VersionParsingException {
+		if (firstWildcardIdx > 0 && components.length > firstWildcardIdx + 1) {
+			return Arrays.copyOf(components, firstWildcardIdx + 1);
+		} else return components;
 	}
 
 	public SemanticVersionImpl(int[] components, String prerelease, String build) {
