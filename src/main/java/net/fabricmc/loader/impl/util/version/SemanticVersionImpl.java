@@ -97,7 +97,6 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 
 			if (storeX) {
 				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[9] = true;
-
 				if (compStr.equals("x") || compStr.equals("X") || compStr.equals("*")) {
 					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[10] = true;
 					if (prerelease != null) {
