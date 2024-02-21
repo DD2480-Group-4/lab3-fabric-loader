@@ -107,17 +107,17 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 		String _version = versionStr, _build, _prerelease;
 
 		if (buildDelimPos >= 0) {
-			_build = versionStr.substring(buildDelimPos + 1);
-			_version = versionStr.substring(0, buildDelimPos);
+			_build = _version.substring(buildDelimPos + 1);
+			_version = _version.substring(0, buildDelimPos);
 		} else {
 			_build = null;
 		}
 
-		int dashDelimPos = versionStr.indexOf('-');
+		int dashDelimPos = _version.indexOf('-');
 
 		if (dashDelimPos >= 0) {
-			_prerelease = versionStr.substring(dashDelimPos + 1);
-			_version = versionStr.substring(0, dashDelimPos);
+			_prerelease = _version.substring(dashDelimPos + 1);
+			_version = _version.substring(0, dashDelimPos);
 		} else {
 			_prerelease = null;
 		}
