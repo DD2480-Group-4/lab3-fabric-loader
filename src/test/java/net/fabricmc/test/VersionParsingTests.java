@@ -345,7 +345,7 @@ public class VersionParsingTests {
 
 		// Test version component[i] is negative
 		{
-			testFalse(tryParseSemantic("2.+gamma.7", false));
+			testFalse(tryParseSemantic("2.-2.0", false));
 		}
 
 		// Test componentStrings.length is 0
