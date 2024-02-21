@@ -439,76 +439,92 @@ public final class ResultAnalyzer {
 	}
 
 	public static String formatVersionRequirements(Collection<VersionInterval> intervals) {
-
 		List<String> ret = new ArrayList<>();
 
 		for (VersionInterval interval : intervals) {
-			String str;
-
 			TestCoverage.ResultAnalyzer_formatVersionRequirements[0] = true;
+			String str = formatInterval(interval);
 
-			if (interval == null) {
-				// empty interval, skip
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[1] = true;
-				continue;
-			} else if (interval.getMin() == null) {
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[2] = true;
-				if (interval.getMax() == null) {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[3] = true;
-					return Localization.format("resolution.version.any");
-				} else if (interval.isMaxInclusive()) {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[4] = true;
-					str = Localization.format("resolution.version.lessEqual", interval.getMax());
-				} else {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[5] = true;
-					str = Localization.format("resolution.version.less", interval.getMax());
-				}
-			} else if (interval.getMax() == null) {
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[6] = true;
-				if (interval.isMinInclusive()) {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[7] = true;
-					str = Localization.format("resolution.version.greaterEqual", interval.getMin());
-				} else {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[8] = true;
-					str = Localization.format("resolution.version.greater", interval.getMin());
-				}
-			} else if (interval.getMin().equals(interval.getMax())) {
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[9] = true;
-				if (interval.isMinInclusive() && interval.isMaxInclusive()) {
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[10] = true;
-					str = Localization.format("resolution.version.equal", interval.getMin());
-				} else {
-					// empty interval, skip
-					TestCoverage.ResultAnalyzer_formatVersionRequirements[11] = true;
-					continue;
-				}
-			} else if (isWildcard(interval, 0)) { // major.x wildcard
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[12] = true;
-				SemanticVersion version = (SemanticVersion) interval.getMin();
-				str = Localization.format("resolution.version.major", version.getVersionComponent(0));
-			} else if (isWildcard(interval, 1)) { // major.minor.x wildcard
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[13] = true;
-				SemanticVersion version = (SemanticVersion) interval.getMin();
-				str = Localization.format("resolution.version.majorMinor", version.getVersionComponent(0), version.getVersionComponent(1));
-			} else {
-				TestCoverage.ResultAnalyzer_formatVersionRequirements[14] = true;
-				String key = String.format("resolution.version.rangeMin%sMax%s",
-						(interval.isMinInclusive() ? "Inc" : "Exc"),
-						(interval.isMaxInclusive() ? "Inc" : "Exc"));
-				str = Localization.format(key, interval.getMin(), interval.getMax());
+			//check str not null
+			if (str != null) {
+				TestCoverage.ResultAnalyzer_formatVersionRequirements[15] = true;
+				ret.add(str);
 			}
-
-			ret.add(str);
 		}
-
 		if (ret.isEmpty()) {
-			TestCoverage.ResultAnalyzer_formatVersionRequirements[15] = true;
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[16] = true;
 			return Localization.format("resolution.version.none");
 		} else {
-			TestCoverage.ResultAnalyzer_formatVersionRequirements[16] = true;
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[17] = true;
 			return formatEnumeration(ret, false);
 		}
 	}
+
+	private static String formatInterval(VersionInterval interval) {
+		if (interval == null) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[1] = true;
+			// empty interval, skip
+			return null;
+		} else if (interval.getMin() == null) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[2] = true;
+			return formatOnMinNullInterval(interval);
+		} else if (interval.getMax() == null) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[6] = true;
+			return formatOnMaxNullInterval(interval);
+		} else if (interval.getMin().equals(interval.getMax())) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[9] = true;
+			return formatOnEqualMinMaxInterval(interval);
+		} else if (isWildcard(interval, 0)) { // major.x wildcard
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[12] = true;
+			SemanticVersion version = (SemanticVersion) interval.getMin();
+			return Localization.format("resolution.version.major", version.getVersionComponent(0));
+		} else if (isWildcard(interval, 1)) { // major.minor.x wildcard
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[13] = true;
+			SemanticVersion version = (SemanticVersion) interval.getMin();
+			return Localization.format("resolution.version.majorMinor", version.getVersionComponent(0), version.getVersionComponent(1));
+		} else {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[14] = true;
+			String key = String.format("resolution.version.rangeMin%sMax%s",
+					(interval.isMinInclusive() ? "Inc" : "Exc"),
+					(interval.isMaxInclusive() ? "Inc" : "Exc"));
+			return Localization.format(key, interval.getMin(), interval.getMax());
+		}
+	}
+
+	private static String formatOnMinNullInterval(VersionInterval interval) {
+		if (interval.getMax() == null) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[3] = true;
+			return Localization.format("resolution.version.any");
+		} else if (interval.isMaxInclusive()) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[4] = true;
+			return Localization.format("resolution.version.lessEqual", interval.getMax());
+		} else {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[5] = true;
+			return Localization.format("resolution.version.less", interval.getMax());
+		}
+	}
+
+	private static String formatOnMaxNullInterval(VersionInterval interval) {
+		if (interval.isMinInclusive()) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[7] = true;
+			return Localization.format("resolution.version.greaterEqual", interval.getMin());
+		} else {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[8] = true;
+			return Localization.format("resolution.version.greater", interval.getMin());
+		}
+	}
+
+	private static String formatOnEqualMinMaxInterval(VersionInterval interval) {
+		if (interval.isMinInclusive() && interval.isMaxInclusive()) {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[10] = true;
+			return Localization.format("resolution.version.equal", interval.getMin());
+		} else {
+			TestCoverage.ResultAnalyzer_formatVersionRequirements[11] = true;
+			// empty interval, skip
+			return null;
+		}
+	}
+
 
 	/**
 	 * Determine whether an interval can be represented by a .x wildcard version string.
