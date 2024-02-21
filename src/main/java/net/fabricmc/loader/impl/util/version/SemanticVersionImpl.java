@@ -68,27 +68,23 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 			prerelease = null;
 		}
 
-		if (prerelease == null) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[4] = true;
-		}
-
 		if (prerelease != null && !DOT_SEPARATED_ID.matcher(prerelease).matches()) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[5] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[4] = true;
 			throw new VersionParsingException("Invalid prerelease string '" + prerelease + "'!");
 		}
 
 		if (version.endsWith(".")) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[6] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[5] = true;
 			throw new VersionParsingException("Negative version number component found!");
 		} else if (version.startsWith(".")) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[7] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[6] = true;
 			throw new VersionParsingException("Missing version component!");
 		}
 
 		String[] componentStrings = version.split("\\.");
 
 		if (componentStrings.length < 1) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[8] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[7] = true;
 			throw new VersionParsingException("Did not provide version numbers!");
 		}
 
@@ -96,44 +92,33 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 		int firstWildcardIdx = -1;
 
 		for (int i = 0; i < componentStrings.length; i++) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[9] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[8] = true;
 			String compStr = componentStrings[i];
 
 			if (storeX) {
-				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[10] = true;
-
-				if (compStr.equals("x")) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[11] = true;
-				}
-				if (!compStr.equals("x") && compStr.equals("X")) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[12] = true;
-				}
-				if (!compStr.equals("x") && !compStr.equals("X") && compStr.equals("*")) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[13] = true;
-				}
+				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[9] = true;
 
 				if (compStr.equals("x") || compStr.equals("X") || compStr.equals("*")) {
+					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[10] = true;
 					if (prerelease != null) {
-						TestCoverage.SemanticVersionImpl_SemanticVersionImpl[14] = true;
+						TestCoverage.SemanticVersionImpl_SemanticVersionImpl[11] = true;
 						throw new VersionParsingException("Pre-release versions are not allowed to use X-ranges!");
 					}
 
 					components[i] = COMPONENT_WILDCARD;
 					if (firstWildcardIdx < 0) {
-						TestCoverage.SemanticVersionImpl_SemanticVersionImpl[15] = true;
+						TestCoverage.SemanticVersionImpl_SemanticVersionImpl[12] = true;
 						firstWildcardIdx = i;
 					}
 					continue;
 				} else if (i > 0 && components[i - 1] == COMPONENT_WILDCARD) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[16] = true;
+					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[13] = true;
 					throw new VersionParsingException("Interjacent wildcard (1.x.2) are disallowed!");
-				} else if (!(i > 0)) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[17] = true;
 				}
 			}
 
 			if (compStr.trim().isEmpty()) {
-				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[18] = true;
+				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[14] = true;
 				throw new VersionParsingException("Missing version number component!");
 			}
 
@@ -141,34 +126,23 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 				components[i] = Integer.parseInt(compStr);
 
 				if (components[i] < 0) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[19] = true;
+					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[15] = true;
 					throw new VersionParsingException("Negative version number component '" + compStr + "'!");
 				}
 			} catch (NumberFormatException e) {
-				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[20] = true;
+				TestCoverage.SemanticVersionImpl_SemanticVersionImpl[16] = true;
 				throw new VersionParsingException("Could not parse version number component '" + compStr + "'!", e);
 			}
 		}
 
-		if (!storeX) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[21] = true;
-		}
-		if (storeX && components.length != 1) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[22] = true;
-		}
-
 		if (storeX && components.length == 1 && components[0] == COMPONENT_WILDCARD) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[23] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[17] = true;
 			throw new VersionParsingException("Versions of form 'x' or 'X' not allowed!");
-		}
-
-		if (!(firstWildcardIdx > 0)) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[24] = true;
 		}
 
 		// strip extra wildcards (1.x.x -> 1.x)
 		if (firstWildcardIdx > 0 && components.length > firstWildcardIdx + 1) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[25] = true;
+			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[18] = true;
 			components = Arrays.copyOf(components, firstWildcardIdx + 1);
 		}
 
