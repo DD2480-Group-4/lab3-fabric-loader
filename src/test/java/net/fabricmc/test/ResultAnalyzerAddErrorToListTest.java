@@ -14,9 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import net.fabricmc.TestCoverage;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.ContactInformation;
@@ -32,6 +34,12 @@ import net.fabricmc.loader.impl.metadata.ModDependencyImpl;
 import net.fabricmc.loader.impl.metadata.V0ModMetadata;
 
 public class ResultAnalyzerAddErrorToListTest {
+
+	@AfterAll
+	public static void AfterAll()
+	{
+		TestCoverage.AfterAllTests();
+	}
 
 	@Test
 	public void addErrorToListTest_MissingMatches() throws VersionParsingException {

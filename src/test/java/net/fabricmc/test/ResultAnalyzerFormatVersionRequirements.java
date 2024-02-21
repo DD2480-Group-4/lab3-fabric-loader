@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.metadata.version.VersionInterval;
 import net.fabricmc.loader.impl.discovery.ResultAnalyzer;
 import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,12 @@ import java.util.Collections;
 
 public class ResultAnalyzerFormatVersionRequirements {
 
+	@AfterAll
+	public static void AfterAll()
+	{
+		TestCoverage.AfterAllTests();
+	}
+	
 	//System.out.println(Arrays.toString(TestCoverage.ResultAnalyzer_formatVersionRequirements));
 	//System.out.println(ret);
 

@@ -1,18 +1,26 @@
 package net.fabricmc.test;
 
 
+import net.fabricmc.TestCoverage;
 import net.fabricmc.loader.api.Version;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.metadata.version.VersionInterval;
 
 import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class DeriveVersionsTest {
+
+	@AfterAll
+	public static void AfterAll()
+	{
+		TestCoverage.AfterAllTests();
+	}
 
 	/**
 	 * Calls deriveVersion using reflection, so we don't need to make the class and method public.
