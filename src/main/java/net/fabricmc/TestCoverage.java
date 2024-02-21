@@ -9,7 +9,7 @@ public class TestCoverage {
 	public static boolean[] SemanticVersionImpl_SemanticVersionImpl = new boolean[19];
 
 	private static int testCounter = 0;
-	private final static int numOfTestFiles = 7;
+	private final static int numOfTestFiles = 8;
 	public static void AfterAllTests()
 	{
 		testCounter++;
