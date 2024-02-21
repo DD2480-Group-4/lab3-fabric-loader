@@ -457,74 +457,87 @@ final class ModSolver {
 
 		if (v != null) { // min bound present
 			if (!interval.isMinInclusive()) { // not inclusive, increment slightly
-				String pr = v.getPrereleaseKey().orElse(null);
-				int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
-
-				if (pr != null) { // has prerelease, add to increase
-					pr = pr.isEmpty() ? "0" : pr.concat(".0");
-				} else { // regular version only, increment patch and make least prerelease
-					if (comps.length < 3) {
-						comps = Arrays.copyOf(comps, comps.length + 1);
-					}
-
-					comps[comps.length - 1]++;
-					pr = "";
-				}
-
-				v = new SemanticVersionImpl(comps, pr, null);
+				v = incrementVersion(v);
 			}
 		} else if ((v = (SemanticVersion) interval.getMax()) != null) { // max bound only
 			if (!interval.isMaxInclusive()) { // not inclusive, decrement slightly
-				String pr = v.getPrereleaseKey().orElse(null);
-				int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
-
-				if (pr == null) { // no prerelease, use large pr segment
-					pr = "zzzzzzzz";
-				} else if (!pr.isEmpty()) { // non-empty prerelease present, decrement slightly or truncate
-					int pos = pr.lastIndexOf('.') + 1;
-					String suffix = pr.substring(pos);
-					int val;
-					char c;
-
-					if (suffix.matches("\\d+") && (val = Integer.parseInt(suffix)) > 0) {
-						pr = pr.substring(0, pos)+(val - 1);
-					} else if (suffix.length() > 0 && ((c = suffix.charAt(suffix.length() - 1)) != '0' || suffix.length() >= 2)) {
-						pr = pr.substring(0, pr.length() - 1);
-
-						if (c == 'a') {
-							pr += 'Z';
-						} else if (c == 'A') {
-							pr += '9';
-						} else if (c != '0') {
-							pr += c - 1;
-						}
-					} else {
-						pr = pos > 0 ? pr.substring(0, pos - 1) : "";
-					}
-				} else { // empty prerelease, decrement version and strip prerelease
-					pr = null;
-
-					if (comps.length < 3) {
-						comps = Arrays.copyOf(comps, 3);
-					}
-
-					for (int i = 2; i >= 0; i--) {
-						if (comps[i] > 0) {
-							comps[i]--;
-							break;
-						} else {
-							comps[i] = 9999;
-						}
-					}
-				}
-
-				v = new SemanticVersionImpl(comps, pr, null);
+				v = decrementVersion(v);
 			}
 		} else { // unbounded
 			v = new SemanticVersionImpl(new int[] { 1 }, null, null);
 		}
 
 		return v;
+	}
+
+	private static SemanticVersion incrementVersion(SemanticVersion v) {
+		String pr = v.getPrereleaseKey().orElse(null);
+		int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
+
+		if (pr != null) { // has prerelease, add to increase
+			pr = pr.isEmpty() ? "0" : pr.concat(".0");
+		} else { // regular version only, increment patch and make least prerelease
+			if (comps.length < 3) {
+				comps = Arrays.copyOf(comps, comps.length + 1);
+			}
+
+			comps[comps.length - 1]++;
+			pr = "";
+		}
+
+		return new SemanticVersionImpl(comps, pr, null);
+	}
+
+	private static SemanticVersion decrementVersion(SemanticVersion v) {
+		String pr = v.getPrereleaseKey().orElse(null);
+		int[] comps = ((SemanticVersionImpl) v).getVersionComponents();
+
+		if (pr == null) { // no prerelease, use large pr segment
+			pr = "zzzzzzzz";
+		} else if (!pr.isEmpty()) { // non-empty prerelease present, decrement slightly or truncate
+			pr = decrementPreRelease(pr);
+		} else { // empty prerelease, decrement version and strip prerelease
+			pr = null;
+
+			if (comps.length < 3) {
+				comps = Arrays.copyOf(comps, 3);
+			}
+
+			for (int i = 2; i >= 0; i--) {
+				if (comps[i] > 0) {
+					comps[i]--;
+					break;
+				} else {
+					comps[i] = 9999;
+				}
+			}
+		}
+
+		return new SemanticVersionImpl(comps, pr, null);
+	}
+
+	private static String decrementPreRelease(String pr) {
+		int pos = pr.lastIndexOf('.') + 1;
+		String suffix = pr.substring(pos);
+		int val;
+		char c;
+
+		if (suffix.matches("\\d+") && (val = Integer.parseInt(suffix)) > 0) {
+			pr = pr.substring(0, pos)+(val - 1);
+		} else if (suffix.length() > 0 && ((c = suffix.charAt(suffix.length() - 1)) != '0' || suffix.length() >= 2)) {
+			pr = pr.substring(0, pr.length() - 1);
+
+			if (c == 'a') {
+				pr += 'Z';
+			} else if (c == 'A') {
+				pr += '9';
+			} else if (c != '0') {
+				pr += c - 1;
+			}
+		} else {
+			pr = pos > 0 ? pr.substring(0, pos - 1) : "";
+		}
+		return pr;
 	}
 
 	static class Fix {
