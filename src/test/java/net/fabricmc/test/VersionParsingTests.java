@@ -329,4 +329,28 @@ public class VersionParsingTests {
 			testFalse(predicate.test(new SemanticVersionImpl("2.0.0-beta.2", false)));
 		}
 	}
+
+	@Test
+	void extra_tests() throws Exception {
+
+		// Test prerelease string format
+		{
+			testFalse(tryParseSemantic("2.2.7-gamma?.7", false));
+		}
+
+		// Test version.startsWith(".")
+		{
+			testFalse(tryParseSemantic(".2.7-gamma.7", false));
+		}
+
+		// Test version component[i] is negative
+		{
+			testFalse(tryParseSemantic("2.+gamma.7", false));
+		}
+
+		// Test componentStrings.length is 0
+		{
+			testFalse(tryParseSemantic("", true));
+		}
+	}
 }
