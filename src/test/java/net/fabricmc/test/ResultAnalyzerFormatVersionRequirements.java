@@ -79,7 +79,7 @@ public class ResultAnalyzerFormatVersionRequirements {
 	Covers branches [0], [9], [10], [11] and [16]
 	 */
 	@Test
-	public void test5() throws VersionParsingException {
+	public void testSpecificVersionOnInclusiveAndExclusive() throws VersionParsingException {
 		Collection<VersionInterval> nullIntervals = Arrays.asList(
 				new VersionIntervalImpl(Version.parse("1.1.1"), true, Version.parse("1.1.1"), false),
 				new VersionIntervalImpl(Version.parse("1.1.1"), true, Version.parse("1.1.1"), true)
