@@ -43,7 +43,7 @@ import net.fabricmc.loader.impl.util.Localization;
 import net.fabricmc.loader.impl.util.StringUtil;
 import net.fabricmc.loader.impl.util.version.VersionIntervalImpl;
 
-final class ResultAnalyzer {
+public final class ResultAnalyzer {
 	private static final boolean SHOW_PATH_INFO = false;
 	private static final boolean SHOW_INACTIVE = false;
 
@@ -442,7 +442,7 @@ final class ResultAnalyzer {
 		return candidates.stream().map(ResultAnalyzer::getVersion).collect(Collectors.joining("/"));
 	}
 
-	private static String formatVersionRequirements(Collection<VersionInterval> intervals) {
+	public static String formatVersionRequirements(Collection<VersionInterval> intervals) {
 
 		List<String> ret = new ArrayList<>();
 
