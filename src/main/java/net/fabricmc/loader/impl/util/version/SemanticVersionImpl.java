@@ -68,10 +68,6 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 			prerelease = null;
 		}
 
-		if (prerelease == null) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[4] = true;
-		}
-
 		if (prerelease != null && !DOT_SEPARATED_ID.matcher(prerelease).matches()) {
 			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[4] = true;
 			throw new VersionParsingException("Invalid prerelease string '" + prerelease + "'!");
@@ -117,8 +113,6 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 				} else if (i > 0 && components[i - 1] == COMPONENT_WILDCARD) {
 					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[13] = true;
 					throw new VersionParsingException("Interjacent wildcard (1.x.2) are disallowed!");
-				} else if (!(i > 0)) {
-					TestCoverage.SemanticVersionImpl_SemanticVersionImpl[17] = true;
 				}
 			}
 
@@ -140,20 +134,9 @@ public class SemanticVersionImpl extends net.fabricmc.loader.util.version.Semant
 			}
 		}
 
-		if (!storeX) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[21] = true;
-		}
-		if (storeX && components.length != 1) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[22] = true;
-		}
-
 		if (storeX && components.length == 1 && components[0] == COMPONENT_WILDCARD) {
 			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[17] = true;
 			throw new VersionParsingException("Versions of form 'x' or 'X' not allowed!");
-		}
-
-		if (!(firstWildcardIdx > 0)) {
-			TestCoverage.SemanticVersionImpl_SemanticVersionImpl[24] = true;
 		}
 
 		// strip extra wildcards (1.x.x -> 1.x)
