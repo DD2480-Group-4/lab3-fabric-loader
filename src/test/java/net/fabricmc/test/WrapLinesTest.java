@@ -18,7 +18,7 @@ public class WrapLinesTest {
 
 	/**
 	 * Test that verifies that long string is wrapped correctly.
-	 * Trigger branches 1, 2, 5, 7, 8, 9, 12.
+	 * Trigger branches 1, 4, 5, 6, 5, 8, 11.
 	 */
 	@Test
 	void testWrapLines_longStringPerformsWrapping() {
@@ -26,7 +26,7 @@ public class WrapLinesTest {
 		String expected = "This is a\nlong\nstring\nthat needs\nto be\nwrapped";
 		int limit = 10;
 		String wrappedString = StringUtil.wrapLines(str, limit);
-		assertEquals(wrappedString, expected);
+		assertEquals(expected, wrappedString);
 	}
 
 	/**
@@ -39,6 +39,33 @@ public class WrapLinesTest {
 		String expected = "";
 		int limit = 10;
 		String notWrappedString = StringUtil.wrapLines(str, limit);
-		assertEquals(notWrappedString, expected);
+		assertEquals(expected, notWrappedString);
 	}
+
+	/**
+	 * Test that verifies that string with escape sequences is wrapped correctly.
+	 * Triggers branches 2 and 3.
+	 */
+	@Test
+	void testWrapLines_escapeSequences() {
+		String str = "Escape\rSequences\n";
+		String expected = "EscapeSequences\n";
+		int limit = 10;
+		String wrappedString = StringUtil.wrapLines(str, limit);
+		assertEquals(expected, wrappedString);
+	}
+
+	/**
+	 * Test that verifies that string with quotations is wrapped correctly.
+	 * Triggers branches 9, and 10.
+	 */
+	@Test
+	void testWrapLines_withQuotations() {
+		String str = "With \'Quotations\' and \"stuff";
+		String expected = "With\n'Quotations'\nand \"stuff";
+		int limit = 10;
+		String wrappedString = StringUtil.wrapLines(str, limit);
+		assertEquals(expected, wrappedString);
+	}
+
 }
