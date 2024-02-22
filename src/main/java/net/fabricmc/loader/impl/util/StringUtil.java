@@ -55,67 +55,51 @@ public final class StringUtil {
 	}
 
 	public static String wrapLines(String str, int limit) {
-		if (str.length() < limit) {
+		if (str.length() <= limit) {
+			// return original string if it's short enough
 			StringUtils_wrapLines[0] = true;
 			return str;
 		}
 
-		StringBuilder sb = new StringBuilder(str.length() + 20);
-		int lastSpace = -1;
+		StringBuilder sb = new StringBuilder();
 		int len = 0;
-
-		for (int i = 0, max = str.length(); i <= max; i++) {
+		int lastSpace = -1;
+		for (int i = 0; i < str.length() - 1; i++) {
 			StringUtils_wrapLines[1] = true;
-			char c = i < max ? str.charAt(i) : ' ';
-
+			char c = str.charAt(i);
 			if (c == '\r') {
+				// ignore carriage returns
 				StringUtils_wrapLines[2] = true;
-				// ignore
-			} else if (c == '\n') {
+				continue;
+			}
+			if (c == ' ') {
+				// record position of space for potential split
 				StringUtils_wrapLines[3] = true;
 				lastSpace = sb.length();
-				sb.append(c);
-				len = 0;
-			} else if (Character.isWhitespace(c)) {
+			}
+			if (len >= limit) {
+				// limit has been exceeded
 				StringUtils_wrapLines[4] = true;
-				if (len > limit && lastSpace >= 0) {
+				if (str.charAt(i + 1) == ' ') {
+					// next character is a space, split there
 					StringUtils_wrapLines[5] = true;
-					sb.setCharAt(lastSpace, '\n');
-					len = sb.length() - lastSpace - 1;
-				}
-
-				if (i == max) {
-					StringUtils_wrapLines[6] = true;
-					break;
-				}
-
-				if (len >= limit) {
-					StringUtils_wrapLines[7] = true;
-					lastSpace = -1;
+					sb.append(c);
 					sb.append('\n');
 					len = 0;
-				} else {
-					StringUtils_wrapLines[8] = true;
-					lastSpace = sb.length();
-					sb.append(c);
-					len++;
+					i++;
+					continue;
 				}
-			} else if (c == '"' || c == '\'') {
-				StringUtils_wrapLines[9] = true;
-				int next = str.indexOf(c, i + 1) + 1;
-				if (next <= 0) {
-					StringUtils_wrapLines[10] = true;
-					next = str.length();
+				if (lastSpace != -1) {
+					// split at last space, and reset len to this position
+					StringUtils_wrapLines[6] = true;
+					sb.setCharAt(lastSpace, '\n');
+					len = sb.length() - lastSpace;
 				}
-				sb.append(str, i, next);
-				len += next - i;
-				i = next - 1;
-			} else {
-				StringUtils_wrapLines[11] = true;
-				sb.append(c);
-				len++;
 			}
+			sb.append(c);
+			len++;
 		}
+		sb.append(str.charAt(str.length() - 1));
 
 		return sb.toString();
 	}

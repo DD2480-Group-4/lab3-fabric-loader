@@ -2,7 +2,7 @@ package net.fabricmc;
 
 public class TestCoverage {
 	
-	public static boolean[] StringUtils_wrapLines = new boolean[12];
+	public static boolean[] StringUtils_wrapLines = new boolean[7];
 	public static boolean[] ModSolver_deriveVersion = new boolean[22];
 	public static boolean[] ResultAnalyzer_formatVersionRequirements = new boolean[17];
 	public static boolean[] ResultAnalyzer_addErrorToList = new boolean[11];

@@ -18,7 +18,8 @@ public class WrapLinesTest {
 
 	/**
 	 * Test that verifies that long string is wrapped correctly.
-	 * Trigger branches 1, 4, 5, 6, 5, 8, 11.
+	 * Previously triggered branches 1, 4, 5, 6, 5, 8 and 11.
+	 * Now triggers: 1, 3, 4, 5 and 6.
 	 */
 	@Test
 	void testWrapLines_longStringPerformsWrapping() {
@@ -31,7 +32,8 @@ public class WrapLinesTest {
 
 	/**
 	 * Test that verifies that short string is not wrapped.
-	 * Triggers branch 0.
+	 * Previously triggered branch 0.
+	 * Now triggers: 0.
 	 */
 	@Test
 	void testWrapLines_shortStringNoWrapping() {
@@ -44,7 +46,8 @@ public class WrapLinesTest {
 
 	/**
 	 * Test that verifies that string with escape sequences is wrapped correctly.
-	 * Triggers branches 2 and 3.
+	 * Previously triggered branches 2 and 3.
+	 * Now triggers: 1, 2 and 4.
 	 */
 	@Test
 	void testWrapLines_escapeSequences() {
@@ -57,7 +60,8 @@ public class WrapLinesTest {
 
 	/**
 	 * Test that verifies that string with quotations is wrapped correctly.
-	 * Triggers branches 9, and 10.
+	 * Previously triggered branches 9 and 10.
+	 * Now triggers: 1, 3, 4, 5 and 6.
 	 */
 	@Test
 	void testWrapLines_withQuotations() {
